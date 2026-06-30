@@ -176,6 +176,12 @@ http://localhost:5173
 (or another available Vite port such as 5174)
 
 ---
+## 📸 Dashboard Preview
+
+<p align="center">
+  <img src="<img width="968" height="582" alt="image" src="https://github.com/user-attachments/assets/95376529-c9da-4edb-887c-6a511e360369" />
+" alt="Ride Analytics Dashboard" width="900">
+</p>
 
 ## 🎯 Future Improvements
 
