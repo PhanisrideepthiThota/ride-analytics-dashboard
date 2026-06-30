@@ -180,7 +180,7 @@ http://localhost:5173
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/95376529-c9da-4edb-887c-6a511e360369" />
-" alt="Ride Analytics Dashboard" width="900">
+
 </p>
 
 ## 🎯 Future Improvements
