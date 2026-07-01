@@ -1,207 +1,121 @@
-# 🚖 Ride Analytics Dashboard
+# Ride Analytics Dashboard
 
-A full-stack Ride Analytics Dashboard developed using **React**, **Express.js**, and **SQL.js**. The application provides REST APIs to manage driver and ride information while displaying analytics such as the fastest, most reliable, and most active drivers through a clean dashboard interface.
+Ride Analytics Dashboard is a full-stack analytics application that transforms ride-sharing data into actionable insights using SQL aggregation queries. Built with React, Express.js, and SQL.js, it provides REST APIs and an interactive dashboard to visualize driver performance, ride statistics, and operational metrics.
 
----
+## Overview
 
-## 📌 Features
+Ride-sharing platforms generate large volumes of driver and trip data, but extracting meaningful insights from it typically requires a structured analytics layer. This project implements a centralized dashboard that runs SQL aggregation queries over a relational dataset and exposes the results through a REST API consumed by a React frontend.
 
-- 📊 Dashboard Statistics
-  - Total Drivers
-  - Total Rides
-  - Completed Rides
-  - Cancelled Rides
+## Problem Statement
 
-- 🚗 View All Drivers
+Ride-sharing platforms accumulate large amounts of data on drivers, rides, and performance metrics, but this raw data has limited value without a system to process and interpret it. Operators need a way to answer practical questions — which drivers are fastest, most reliable, or most active, and how rides are trending overall — without manually querying the database each time. This project addresses that gap with a dashboard that turns raw ride data into structured, actionable insights.
 
-- 🛣️ View All Rides
+## Tech Stack
 
-- ⚡ Top 5 Fastest Drivers
+**Frontend:** React, Vite, CSS3, Fetch API
 
-- ⭐ Top 5 Most Reliable Drivers
+**Backend:** Node.js, Express.js
 
-- 📈 Top 5 Most Active Drivers
+**Database:** SQL.js (SQLite compiled to WebAssembly)
 
-- 🔍 Search Drivers by Name
+**Tools:** Git, GitHub, VS Code, npm
 
-- 🌐 REST API Integration
+## Features
 
-- 💻 Responsive Dashboard UI
+- Dashboard summary: total drivers, total rides, completed rides, cancelled rides
+- View all drivers and all rides
+- Search drivers by name
+- Top 5 fastest drivers (by average trip duration)
+- Top 5 most reliable drivers (by average rating)
+- Top 5 most active drivers (by ride count)
+- REST API backing all dashboard views
 
----
+## Architecture
 
-## 🛠 Tech Stack
+```
+Frontend (React + Vite)
+        │
+        │ Fetch API
+        ▼
+Backend (Node.js + Express)
+        │
+        │ SQL Queries
+        ▼
+Database (SQL.js)
+```
 
-### Frontend
-- React
-- CSS3
-- Fetch API
+## Database Schema
 
-### Backend
-- Node.js
-- Express.js
+**Drivers**
+`driver_id`, `driver_name`, `phone`, `city`, `vehicle`, `rating`, `status`
 
-### Database
-- SQL.js (In-Memory SQL Database)
+**Rides**
+`ride_id`, `driver_id`, `pickup`, `drop_location`, `distance_km`, `trip_duration`, `fare`, `status`
 
----
+**Relationship:** One driver → many rides
 
-## 🗄 Database Tables
+## Analytics Logic
 
-### Drivers
+Dashboard insights are computed with SQL aggregation queries using `GROUP BY`, `ORDER BY`, `LIMIT`, and `JOIN`:
 
-| Column |
-|---------|
-| driver_id |
-| driver_name |
-| phone |
-| city |
-| vehicle |
-| rating |
-| status |
+| Metric | Query Logic |
+|---|---|
+| Fastest Drivers | Lowest `AVG(trip_duration)` |
+| Most Reliable Drivers | Highest `AVG(rating)` |
+| Most Active Drivers | Highest `COUNT(ride_id)` |
+| Dashboard Stats | `COUNT()` over drivers and rides |
 
-### Rides
-
-| Column |
-|---------|
-| ride_id |
-| driver_id |
-| pickup |
-| drop_location |
-| distance_km |
-| trip_duration |
-| fare |
-| status |
-
----
-
-## 🧠 SQL Concepts Used
-
-- SELECT
-- WHERE
-- JOIN
-- GROUP BY
-- ORDER BY
-- COUNT()
-- AVG()
-- ROUND()
-- LIMIT
-- PRIMARY KEY
-- FOREIGN KEY
-
----
-
-## 📡 API Endpoints
+## API Endpoints
 
 | Method | Endpoint | Description |
-|---------|----------|-------------|
-| GET | /api/drivers/dashboard | Dashboard statistics |
-| GET | /api/drivers/all-drivers | List all drivers |
-| GET | /api/drivers/all-rides | List all rides |
-| GET | /api/drivers/fastest | Top 5 fastest drivers |
-| GET | /api/drivers/reliable | Top 5 reliable drivers |
-| GET | /api/drivers/active | Top 5 active drivers |
+|---|---|---|
+| GET | `/api/drivers/dashboard` | Summary statistics |
+| GET | `/api/drivers/all-drivers` | List of all drivers |
+| GET | `/api/drivers/all-rides` | List of all rides |
+| GET | `/api/drivers/fastest` | Top 5 fastest drivers |
+| GET | `/api/drivers/reliable` | Top 5 most reliable drivers |
+| GET | `/api/drivers/active` | Top 5 most active drivers |
 
----
-
-## 📂 Project Structure
+## Project Structure
 
 ```
-Ride Analytics Dashboard
-│
-├── backend
-│   ├── db.js
-│   ├── drivers.js
-│   └── server.js
-│
-├── src
-│   ├── components
-│   │   ├── Header.jsx
-│   │   ├── DashboardCards.jsx
-│   │   └── DataTable.jsx
-│   │
-│   ├── App.jsx
-│   ├── App.css
-│   └── main.jsx
-│
-├── package.json
-├── README.md
-└── vite.config.js
+backend/
+  db.js
+  drivers.js
+  server.js
+
+src/
+  components/
+    Header.jsx
+    DashboardCards.jsx
+    DataTable.jsx
+  App.jsx
+  App.css
+  main.jsx
 ```
 
----
+## Why SQL.js?
 
-## ▶️ How to Run
+SQL.js runs SQLite in-memory via WebAssembly, removing the need for an external database server. This keeps the project lightweight and easy to run locally without additional setup.
 
-### 1. Clone the Repository
+## Challenges
 
-```bash
-git clone https://github.com/PhanisrideepthiThota/ride-analytics-dashboard.git
-```
+- Designing SQL queries that produce accurate, meaningful analytics
+- Modeling the one-to-many relationship between drivers and rides
+- Keeping data flow consistent between backend and frontend
+- Managing state and rendering dynamic tables in React
 
-### 2. Move into the Project
+## What I Learned
 
-```bash
-cd ride-analytics-dashboard
-```
+- Building a full-stack app with a React frontend and Express backend
+- Designing a relational schema and writing aggregation queries
+- Exposing data through a REST API and consuming it on the frontend
+- Structuring a project for readability and maintainability
 
-### 3. Install Dependencies
+## Future Improvements
 
-```bash
-npm install
-```
-
-### 4. Start the Application
-
-```bash
-npm run dev
-```
-
-### Backend
-
-Runs on:
-
-```
-http://localhost:5000
-```
-
-### Frontend
-
-Runs on:
-
-```
-http://localhost:5173
-```
-
-(or another available Vite port such as 5174)
-
----
-## 📸 Dashboard Preview
-
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/95376529-c9da-4edb-887c-6a511e360369" />
-
-</p>
-
-## 🎯 Future Improvements
-
-- Authentication
-- Pagination
-- Charts & Visual Analytics
-- Export Reports
-- Spring Boot + MySQL Migration
-
----
-
-## 👩‍💻 Author
-
-**Phani Sri Deepthi**
-
-GitHub:
-https://github.com/PhanisrideepthiThota
-
----
-
-## ⭐ If you like this project
-
-Give it a ⭐ on GitHub.
+- JWT-based authentication
+- Pagination for large datasets
+- Interactive charts for ride/driver trends
+- Exportable reports (CSV/PDF)
+- Migration to Spring Boot + MySQL for a production-grade backend
