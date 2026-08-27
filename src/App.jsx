@@ -6,7 +6,6 @@ import DataTable from "./components/DataTable";
 
 import "./App.css";
 
-
 const API = `${import.meta.env.VITE_API_URL}/api/drivers`;
 
 function App() {
