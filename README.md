@@ -1,121 +1,444 @@
-# Ride Analytics Dashboard
+# 🚖 Ride Analytics Dashboard
 
-Ride Analytics Dashboard is a full-stack analytics application that transforms ride-sharing data into actionable insights using SQL aggregation queries. Built with React, Express.js, and SQL.js, it provides REST APIs and an interactive dashboard to visualize driver performance, ride statistics, and operational metrics.
+A full-stack ride analytics application that turns driver and ride data into structured insights through SQL queries and an interactive React dashboard.
 
-## Overview
+### 🚀 Live Demo
 
-Ride-sharing platforms generate large volumes of driver and trip data, but extracting meaningful insights from it typically requires a structured analytics layer. This project implements a centralized dashboard that runs SQL aggregation queries over a relational dataset and exposes the results through a REST API consumed by a React frontend.
+[**Open Ride Analytics Dashboard →**](https://ride-analytics-dashboard.vercel.app)
 
-## Problem Statement
+### 💻 Source Code
 
-Ride-sharing platforms accumulate large amounts of data on drivers, rides, and performance metrics, but this raw data has limited value without a system to process and interpret it. Operators need a way to answer practical questions — which drivers are fastest, most reliable, or most active, and how rides are trending overall — without manually querying the database each time. This project addresses that gap with a dashboard that turns raw ride data into structured, actionable insights.
+[**GitHub Repository →**](https://github.com/PhanisrideepthiThota/ride-analytics-dashboard)
 
-## Tech Stack
+---
 
-**Frontend:** React, Vite, CSS3, Fetch API
+## 📌 Overview
 
-**Backend:** Node.js, Express.js
+Ride-sharing platforms generate large amounts of data about drivers, rides, trip duration, fares, ratings, and ride status. However, raw data becomes useful only when it can be queried and presented in a way that helps users understand performance.
 
-**Database:** SQL.js (SQLite compiled to WebAssembly)
+This project was built as a **self-driven full-stack learning project** to explore how a React frontend can communicate with an Express.js backend, how REST APIs can expose database results, and how SQL aggregation queries can be used to generate useful ride and driver analytics.
 
-**Tools:** Git, GitHub, VS Code, npm
+The dashboard allows users to view overall ride statistics, search drivers, explore ride information, and identify drivers based on speed, reliability, and activity.
 
-## Features
+---
 
-- Dashboard summary: total drivers, total rides, completed rides, cancelled rides
-- View all drivers and all rides
-- Search drivers by name
-- Top 5 fastest drivers (by average trip duration)
-- Top 5 most reliable drivers (by average rating)
-- Top 5 most active drivers (by ride count)
-- REST API backing all dashboard views
+## 🎯 Problem Statement
 
-## Architecture
+Ride-sharing platforms accumulate large amounts of data on drivers and rides, but raw data alone does not provide meaningful insights.
 
+Operators may need to answer questions such as:
+
+- Who are the fastest drivers?
+- Which drivers have the highest ratings?
+- Which drivers complete the most rides?
+- How many rides are completed or cancelled?
+- What are the available driver and ride records?
+
+Manually querying the database for each of these questions is inefficient.
+
+This project addresses that gap by providing a **centralized analytics dashboard** that uses SQL queries to process ride and driver data and exposes the results through REST APIs for a React-based user interface.
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+- React.js
+- Vite
+- CSS3
+- Fetch API
+
+### Backend
+
+- Node.js
+- Express.js
+- REST APIs
+- CORS
+
+### Database
+
+- SQL.js
+- SQLite
+- WebAssembly
+
+### Tools
+
+- Git
+- GitHub
+- VS Code
+- npm
+
+### Deployment
+
+- Vercel — Frontend
+- Render — Backend
+
+---
+
+## ✨ Features
+
+- 📊 Dashboard summary:
+  - Total drivers
+  - Total rides
+  - Completed rides
+  - Cancelled rides
+
+- 🚗 View all drivers
+- 🛣️ View all rides
+- 🔍 Search drivers by name
+- ⚡ Top 5 fastest drivers
+- ⭐ Top 5 most reliable drivers
+- 📈 Top 5 most active drivers
+- 🔌 REST API based data flow
+- 📱 Interactive React dashboard
+
+---
+
+## 🏗️ Architecture
+
+The application follows a simple frontend-backend-database architecture.
+
+```text
+                    User
+                     │
+                     ▼
+            React + Vite Frontend
+                     │
+                Fetch API
+                     │
+                     ▼
+             Node.js + Express
+                     │
+                 REST APIs
+                     │
+                     ▼
+                  SQL.js
+                     │
+                SQL Queries
+                     │
+                     ▼
+          Drivers + Rides Data
 ```
-Frontend (React + Vite)
-        │
-        │ Fetch API
-        ▼
-Backend (Node.js + Express)
-        │
-        │ SQL Queries
-        ▼
-Database (SQL.js)
+
+
+### How the Application Works
+
+1. The user interacts with the dashboard through the React frontend.
+2. React sends HTTP requests to the Express backend using the Fetch API.
+3. Express receives the request through the appropriate REST API endpoint.
+4. The backend executes SQL queries against the SQL.js database.
+5. The query results are returned from the backend as JSON.
+6. React receives the response and updates the dashboard or table.
+
+### Example Request Flow
+
+When the user clicks **⚡ Fastest Drivers**:
+
+```text
+User clicks "Fastest"
+        ↓
+React calls GET /api/drivers/fastest
+        ↓
+Express receives the request
+        ↓
+Backend executes SQL query
+        ↓
+SQL.js returns the results
+        ↓
+Express sends JSON response
+        ↓
+React updates the table
+        ↓
+User sees the fastest drivers
 ```
 
-## Database Schema
+---
 
-**Drivers**
-`driver_id`, `driver_name`, `phone`, `city`, `vehicle`, `rating`, `status`
+## 🌐 Deployment Architecture
 
-**Rides**
-`ride_id`, `driver_id`, `pickup`, `drop_location`, `distance_km`, `trip_duration`, `fare`, `status`
+The frontend and backend are deployed separately.
 
-**Relationship:** One driver → many rides
+```text
+                    User
+                      │
+                      ▼
+             Vercel Frontend
+             React + Vite
+                      │
+                HTTP Request
+                      │
+                      ▼
+             Render Backend
+             Node.js + Express
+                      │
+                      ▼
+                  SQL.js
+                   SQLite
+```
 
-## Analytics Logic
+The frontend communicates with the deployed backend using the `VITE_API_URL` environment variable.
 
-Dashboard insights are computed with SQL aggregation queries using `GROUP BY`, `ORDER BY`, `LIMIT`, and `JOIN`:
+---
 
-| Metric | Query Logic |
+## 🗄️ Database Schema
+
+The application uses two main tables: **Drivers** and **Rides**.
+
+### Drivers Table
+
+| Column | Description |
 |---|---|
-| Fastest Drivers | Lowest `AVG(trip_duration)` |
-| Most Reliable Drivers | Highest `AVG(rating)` |
-| Most Active Drivers | Highest `COUNT(ride_id)` |
-| Dashboard Stats | `COUNT()` over drivers and rides |
+| `driver_id` | Unique identifier for a driver |
+| `driver_name` | Driver's name |
+| `phone` | Driver's phone number |
+| `city` | Driver's city |
+| `vehicle` | Driver's vehicle |
+| `rating` | Driver rating |
+| `status` | Driver status |
 
-## API Endpoints
+### Rides Table
 
-| Method | Endpoint | Description |
+| Column | Description |
+|---|---|
+| `ride_id` | Unique identifier for a ride |
+| `driver_id` | Driver associated with the ride |
+| `pickup` | Ride pickup location |
+| `drop_location` | Ride destination |
+| `distance_km` | Distance travelled |
+| `trip_duration` | Duration of the trip |
+| `fare` | Ride fare |
+| `status` | Ride status |
+
+### Relationship
+
+A driver can have multiple rides.
+
+```text
+Drivers
+   │
+   │ driver_id
+   ▼
+Rides
+
+One Driver ───────► Many Rides
+```
+
+The `driver_id` in the `Rides` table connects each ride to its corresponding driver.
+
+---
+
+## 📊 Analytics Logic
+
+The dashboard uses SQL queries to calculate and retrieve useful information from the driver and ride data.
+
+| Analytics | SQL Logic |
+|---|---|
+| Fastest Drivers | Average trip duration |
+| Most Reliable Drivers | Driver rating |
+| Most Active Drivers | Number of rides |
+| Dashboard Statistics | Counts of drivers and rides |
+
+SQL concepts used include:
+
+- `SELECT`
+- `COUNT()`
+- `AVG()`
+- `GROUP BY`
+- `ORDER BY`
+- `LIMIT`
+- `JOIN`
+
+These queries allow the backend to transform raw database records into results that can be displayed on the dashboard.
+
+---
+
+## 🔌 REST API Endpoints
+
+The Express backend exposes the following REST API endpoints:
+
+| Method | Endpoint | Purpose |
 |---|---|---|
-| GET | `/api/drivers/dashboard` | Summary statistics |
-| GET | `/api/drivers/all-drivers` | List of all drivers |
-| GET | `/api/drivers/all-rides` | List of all rides |
-| GET | `/api/drivers/fastest` | Top 5 fastest drivers |
-| GET | `/api/drivers/reliable` | Top 5 most reliable drivers |
-| GET | `/api/drivers/active` | Top 5 most active drivers |
+| `GET` | `/api/drivers/dashboard` | Returns dashboard summary statistics |
+| `GET` | `/api/drivers/all-drivers` | Returns all driver records |
+| `GET` | `/api/drivers/all-rides` | Returns all ride records |
+| `GET` | `/api/drivers/fastest` | Returns the fastest drivers |
+| `GET` | `/api/drivers/reliable` | Returns the most reliable drivers |
+| `GET` | `/api/drivers/active` | Returns the most active drivers |
 
-## Project Structure
+The frontend communicates with these endpoints using HTTP `GET` requests and receives the results as JSON.
 
+---
+
+## 📁 Project Structure
+
+```text
+ride-analytics-dashboard/
+│
+├── backend/
+│   ├── db.js
+│   ├── drivers.js
+│   └── server.js
+│
+├── src/
+│   ├── components/
+│   │   ├── Header.jsx
+│   │   ├── DashboardCards.jsx
+│   │   └── DataTable.jsx
+│   │
+│   ├── App.jsx
+│   ├── App.css
+│   └── main.jsx
+│
+├── .gitignore
+├── README.md
+├── package.json
+├── package-lock.json
+├── vite.config.js
+└── index.html
 ```
-backend/
-  db.js
-  drivers.js
-  server.js
 
-src/
-  components/
-    Header.jsx
-    DashboardCards.jsx
-    DataTable.jsx
-  App.jsx
-  App.css
-  main.jsx
+### Important Files
+
+| File | Responsibility |
+|---|---|
+| `App.jsx` | Main React component and API interaction |
+| `Header.jsx` | Dashboard header |
+| `DashboardCards.jsx` | Displays summary statistics |
+| `DataTable.jsx` | Displays dynamic driver/ride data |
+| `server.js` | Creates and starts the Express server |
+| `drivers.js` | Defines driver-related API routes and SQL queries |
+| `db.js` | Initializes and manages the SQL.js database |
+
+---
+
+## 📸 Dashboard Preview
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/95376529-c9da-4edb-887c-6a511e360369"
+       alt="Ride Analytics Dashboard"
+       width="900">
+</p>
+
+---
+
+## 💡 Why SQL.js?
+
+SQL.js allows the project to use SQLite through WebAssembly without requiring a separately installed database server.
+
+This makes the application lightweight and simple to run locally while providing practical experience with:
+
+- Relational databases
+- SQL queries
+- Aggregation
+- Joins
+- Filtering
+- Sorting
+- Grouping
+
+---
+
+## 🧠 Challenges
+
+Some of the main challenges encountered while building the project were:
+
+- Designing SQL queries for different analytics requirements
+- Working with the one-to-many relationship between drivers and rides
+- Connecting the React frontend with REST APIs
+- Managing React state when switching between different dashboard views
+- Rendering dynamic table columns and data
+- Configuring environment variables for frontend-backend communication
+- Deploying the frontend and backend as separate services
+
+---
+
+## 📚 What I Learned
+
+Through this project, I gained practical experience with:
+
+- Building a React frontend
+- Creating REST APIs using Express.js
+- Working with relational data
+- Writing SQL aggregation queries
+- Connecting a frontend application to a backend API
+- Managing state in React
+- Using Git and GitHub for version control
+- Working with environment variables
+- Deploying a frontend using Vercel
+- Deploying a backend using Render
+
+---
+
+## 🚀 Running the Project Locally
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/PhanisrideepthiThota/ride-analytics-dashboard.git
+cd ride-analytics-dashboard
 ```
 
-## Why SQL.js?
+### 2. Install dependencies
 
-SQL.js runs SQLite in-memory via WebAssembly, removing the need for an external database server. This keeps the project lightweight and easy to run locally without additional setup.
+```bash
+npm install
+```
 
-## Challenges
+### 3. Create the environment file
 
-- Designing SQL queries that produce accurate, meaningful analytics
-- Modeling the one-to-many relationship between drivers and rides
-- Keeping data flow consistent between backend and frontend
-- Managing state and rendering dynamic tables in React
+Create a `.env` file in the project root:
 
-## What I Learned
+```env
+VITE_API_URL=http://localhost:5000
+```
 
-- Building a full-stack app with a React frontend and Express backend
-- Designing a relational schema and writing aggregation queries
-- Exposing data through a REST API and consuming it on the frontend
-- Structuring a project for readability and maintainability
+### 4. Start the application
 
-## Future Improvements
+```bash
+npm run dev
+```
 
-- JWT-based authentication
-- Pagination for large datasets
-- Interactive charts for ride/driver trends
-- Exportable reports (CSV/PDF)
-- Migration to Spring Boot + MySQL for a production-grade backend
+The frontend will run on:
+
+```text
+http://localhost:5173
+```
+
+The backend will run on:
+
+```text
+http://localhost:5000
+```
+
+---
+
+## 🌐 Live Deployment
+
+### Frontend
+
+**Vercel**
+
+[**Open Live Dashboard →**](https://ride-analytics-dashboard.vercel.app)
+
+### Backend
+
+**Render**
+
+```text
+https://ride-analytics-dashboard.onrender.com
+```
+
+The React frontend communicates with the deployed Express backend using the `VITE_API_URL` environment variable.
+
+---
+
+## 🔮 Future Improvements
+
+Possible future improvements include:
+
+- 🔐 JWT-based authentication
+- 📄 Pagination for larger datasets
+- 📊 Interactive charts for ride and driver trends
+- 📥 CSV/PDF report export
+- 🔎 More advanced analytics and filtering
+- ☕ Migration to Spring Boot + MySQL for a more production-oriented backend
